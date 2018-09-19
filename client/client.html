@@ -6,6 +6,53 @@
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script type="text/babel">
+    const handleResponse = (xhr) => {
+        const content = document.querySelector('#content');
+        switch(xhr.status) {
+            case 200:
+                content.innerHTML = '<b>Success</b><p>This is a successful response.</p>';
+                break;
+            case 400:
+                content.innerHTML = '<b>Bad Request</b><p>Missing valid query parameter set to true.</p>';
+                break;
+            case 401:
+                content.innerHTML = '<b>Unauthorized</b><p>Missing loggedIn query parameter set to yes.</p>';
+                break;
+            case 403:
+                content.innerHTML = '<b>Forbidden</b><p>You do not have access to this content.</p>';
+                break;
+            case 404:
+                content.innerHTML = '<b>Resource Not Found</b><p>The page you are looking for was not found.</p>';
+                break;
+            case 500:
+                content.innerHTML = '<b>Internal Server Error</b><p>Internal Server Error. Something went wrong.</p>';
+                break;
+            default:
+                content.innerHTML = '<b>Not Implemented</b><p>A get request for this page has not been implemented yet. Check again later for updated content.</p>';
+                break;
+        }
+    };
+
+    const requestUpdate = (e, url, type) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.setRequestHeader('Accept', type);
+        xhr.onload = () => handleResponse(xhr);
+        xhr.send();
+        e.preventDefault();
+        return false;
+    };
+    
+    const init = () => {
+        const page = document.querySelector('#page');
+        const acceptedType = document.querySelector('#type');
+        const getRequest = (e) => requestUpdate(e, page.value, acceptedType.value);
+        
+        const button = document.querySelector('#send');
+        button.addEventListener('click', getRequest);
+    };
+
+    window.onload = init;
 
   </script>
 </head>
